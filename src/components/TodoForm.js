@@ -17,6 +17,7 @@ class TodoForm extends Component {
     await this.props.firestore.add({
       collection: 'todos',
     }, {
+      uid: this.props.uid,
       title: this.state.text,
       completed: false,
     })
@@ -43,7 +44,9 @@ class TodoForm extends Component {
   }
 }
 
-const mapStateToProps = () => ({})
+const mapStateToProps = state => ({
+  uid: state.firebase.auth.uid,
+})
 const mapDispatchToProps = {}
 
 export default compose(

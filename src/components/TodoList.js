@@ -42,12 +42,23 @@ class TodoList extends Component {
 
 const mapStateToProps = state => {
   return {
+    uid: state.firebase.auth.uid,
     todos: state.firestore.ordered.todos ? state.firestore.ordered.todos : [],
   }
 }
 const mapDispatchToProps = {}
 
 export default compose(
-  firestoreConnect([{ collection: 'todos' }]),
-  connect(mapStateToProps, mapDispatchToProps)
+  connect(mapStateToProps, mapDispatchToProps),
+  firestoreConnect(props => {
+    if (!props.uid) return []
+    return [
+      {
+        collection: 'todos',
+        where: [
+          ['uid', '==', props.uid],
+        ],
+      },
+    ]
+  }),
 )(TodoList)
