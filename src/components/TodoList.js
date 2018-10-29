@@ -14,6 +14,13 @@ class TodoList extends Component {
     })
   }
 
+  deleteTodo(id) {
+    this.props.firestore.delete({
+      collection: 'todos',
+      doc: id,
+    })
+  }
+
   render() {
     return (
       <div>
@@ -25,6 +32,7 @@ class TodoList extends Component {
               onChange={() => this.toggleTodo(todo)}
             />
             {todo.title}
+            <button onClick={() => this.deleteTodo(todo.id)}>x</button>
           </div>
         ))}
       </div>

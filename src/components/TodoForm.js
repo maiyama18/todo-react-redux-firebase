@@ -1,5 +1,7 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
+import { compose } from '../../../../../../Library/Caches/typescript/3.1/node_modules/redux'
+import { firestoreConnect } from 'react-redux-firebase'
 
 class TodoForm extends Component {
   constructor(props) {
@@ -31,18 +33,20 @@ class TodoForm extends Component {
             value={this.state.text}
             onChange={e => this.setState({ text: e.target.value })}
           />
-          <button type="submit" disabled={this.props.requesting}>Submit</button>
+          <button 
+            type="submit" 
+            disabled={this.state.requesting || this.state.text.length === 0}
+          >Submit</button>
         </form>
       </div>
     )
   }
 }
 
-const mapStateToProps = state => {
-  return {
-    firestore: state.firestore,
-  }
-}
+const mapStateToProps = () => ({})
 const mapDispatchToProps = {}
 
-export default connect(mapStateToProps, mapDispatchToProps)(TodoForm)
+export default compose(
+  firestoreConnect(),
+  connect(mapStateToProps, mapDispatchToProps)
+)(TodoForm)
