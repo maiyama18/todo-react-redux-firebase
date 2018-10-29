@@ -4,12 +4,26 @@ import { connect } from 'react-redux'
 import { firestoreConnect } from 'react-redux-firebase'
 
 class TodoList extends Component {
+  toggleTodo(todo) {
+    this.props.firestore.update({ 
+      collection: 'todos', 
+      doc: todo.id, 
+    }, { 
+      ...todo,
+      completed: !todo.completed,
+    })
+  }
+
   render() {
     return (
       <div>
         {this.props.todos.map(todo => (
           <div key={todo.id} style={{ textDecoration: todo.completed ? 'line-through' : 'none' }}>
-            <input type="checkbox" checked={todo.completed}/>
+            <input 
+              type="checkbox" 
+              checked={todo.completed}
+              onChange={() => this.toggleTodo(todo)}
+            />
             {todo.title}
           </div>
         ))}

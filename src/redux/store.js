@@ -25,9 +25,9 @@ const enhancers = [
   }),
 ]
 
-const reduxDevtoolsExtension = window.devtoolsExtension
-if (process.env.NODE_ENV === 'development' && typeof reduxDevtoolsExtension === 'function') {
-  enhancers.push(reduxDevtoolsExtension())
+const reduxDevToolsExtension = window.devToolsExtension
+if (process.env.NODE_ENV === 'development' && typeof reduxDevToolsExtension === 'function') {
+  enhancers.push(reduxDevToolsExtension())
 }
 
 const store = createStore(rootReducer, initialState, compose(...enhancers))
