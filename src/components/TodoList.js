@@ -1,7 +1,9 @@
 import React, { Component } from 'react'
-import { compose } from 'redux'
+import { compose, bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
 import { firestoreConnect } from 'react-redux-firebase'
+import TodoFilter from './TodoFilter'
+import { setFilter } from '../redux/filter'
 
 class TodoList extends Component {
   toggleTodo(todo) {
@@ -24,7 +26,11 @@ class TodoList extends Component {
   render() {
     return (
       <div>
-        {this.props.todos.map(todo => (
+        <TodoFilter 
+          currentFilter={this.props.currentFilter} 
+          setFilter={this.props.setFilter} 
+        />
+        {this.props.filteredTodos.map(todo => (
           <div key={todo.id} style={{ textDecoration: todo.completed ? 'line-through' : 'none' }}>
             <input 
               type="checkbox" 
@@ -41,12 +47,34 @@ class TodoList extends Component {
 }
 
 const mapStateToProps = state => {
+  const { currentFilter } = state.filter
+  const todos = state.firestore.ordered.todos || []
+  let filteredTodos
+  switch (currentFilter) {
+  case 'all':
+    filteredTodos = todos
+    break
+  case 'completed':
+    filteredTodos = todos.filter(todo => todo.completed === true)
+    break
+  case 'uncompleted':
+    filteredTodos = todos.filter(todo => todo.completed === false)
+    break
+  default:
+    filteredTodos = todos
+  }
+
   return {
     uid: state.firebase.auth.uid,
-    todos: state.firestore.ordered.todos ? state.firestore.ordered.todos : [],
+    currentFilter,
+    filteredTodos, 
   }
 }
-const mapDispatchToProps = {}
+const mapDispatchToProps = dispatch => ({
+  ...bindActionCreators({
+    setFilter,
+  }, dispatch),
+})
 
 export default compose(
   connect(mapStateToProps, mapDispatchToProps),

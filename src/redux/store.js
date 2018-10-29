@@ -6,15 +6,19 @@ import { firebaseReducer } from 'react-redux-firebase'
 import { reduxFirestore, firestoreReducer } from 'redux-firestore'
 import { reactReduxFirebase } from 'react-redux-firebase'
 import firebaseConfig from '../firebaseConfig'
+import { filterInitialState, filterReducer } from './filter'
 
 firebase.initializeApp(firebaseConfig)
 firebase.firestore().settings({ timestampsInSnapshots: true })
 
-const initialState = {}
+const initialState = {
+  filter: filterInitialState,
+}
 
 const rootReducer = combineReducers({
   firebase: firebaseReducer,
   firestore: firestoreReducer,
+  filter: filterReducer,
 })
 
 const enhancers = [
